@@ -1,17 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TiendaVirtualReyes.Data;
 using TiendaVirtualReyes.Models;
 
 namespace TiendaVirtualReyes.Controllers
 {
     public class ProductoController : Controller
     {
-        public IActionResult Index()
+        private readonly TiendaContext _context;
+        public ProductoController(TiendaContext context)
         {
-            var productos = new List<Producto>
-            {
-                new Producto { Id = 1,Nombre="Laptop",Precio= 3200, Stock=5 },
-                new Producto { Id = 2,Nombre="Mouse", Precio=80, Stock=5 }
-            };
+            _context = context;
+        }
+        public IActionResult index()
+        {
+            var productos = _context.productos
+                .Include(p => p.Categoria)
+                .ToList();
+
             return View(productos);
         }
     }
