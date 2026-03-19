@@ -7,7 +7,7 @@ namespace TiendaVirtualReyes.Controllers
 {
     public class ProductoController : Controller
     {
-        private readonly TiendaContext _context;
+        private readonly TiendaContext _context; //conexio con la db
         public ProductoController(TiendaContext context)
         {
             _context = context;
@@ -15,8 +15,8 @@ namespace TiendaVirtualReyes.Controllers
         public IActionResult index()
         {
             var productos = _context.productos
-                .Include(p => p.Categoria)
-                .ToList();
+                .Include(p => p.Categoria)  // hereda de categoria 
+                .ToList(); // slect * from
 
             return View(productos);
         }
