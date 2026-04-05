@@ -7,7 +7,7 @@ namespace TiendaVirtualReyes.Controllers
 {
     public class ProductoController : Controller
     {
-        private readonly TiendaContext _context; //conexio con la db
+        private readonly TiendaContext _context; //conexion con la db
         public ProductoController(TiendaContext context)
         {
             _context = context;
@@ -21,20 +21,36 @@ namespace TiendaVirtualReyes.Controllers
             return View(productos);
         }
 
-        //formulario crear
+        // 1. FORMULARIO CREAR (GET)
         public IActionResult Create()
         {
+            //categorías de la base de datos para el menú desplegable
+            ViewBag.Categorias = _context.categorias.ToList();
             return View();
         }
 
-        //guardar productos
+        // Recibe los datos y los guarda
         [HttpPost]
         public IActionResult Create(Producto producto)
         {
-            _context.productos.Add(producto);
-            _context.SaveChanges();
+            // A. Validar exista en la tabla categorias
+            var existeCategoria = _context.categorias.Any(c => c.Id == producto.CategoriaId);
 
-            return RedirectToAction("Index");
+            if (!existeCategoria)
+            {
+                ModelState.AddModelError("CategoriaId", "seleccionar categoria valida");
+            }
+
+            // B. Si el modelo es válido ( nombre, precio, etc)
+            if (ModelState.IsValid)
+            {
+                _context.productos.Add(producto); 
+                _context.SaveChanges(); 
+                return RedirectToAction("index"); 
+            }
+
+            ViewBag.Categorias = _context.categorias.ToList();
+            return View(producto);
         }
 
         //formulario editar
@@ -43,8 +59,7 @@ namespace TiendaVirtualReyes.Controllers
             // 1. Buscas el producto que vas a editar
             var producto = _context.productos.Find(id);
 
-            // 2. ¡ESTA ES LA LÍNEA CLAVE! 
-            // Debes traer las categorías de la DB para que el ViewBag no sea nulo
+            // traer las categorías para que ViewBag
             ViewBag.Categorias = _context.categorias.ToList();
 
             // 3. Envías el producto a la vista
@@ -61,15 +76,19 @@ namespace TiendaVirtualReyes.Controllers
             return RedirectToAction("Index");
         }
 
-        //Eliminar producto 
-        public IActionResult Delete (int id)
+        // Eliminar producto 
+        public IActionResult Delete(int id)
         {
-            var produco = _context.productos.Find(id);
+            // 1. Buscamos el producto por su ID
+            var producto = _context.productos.Find(id);
 
-            _context.productos.Remove(produco);
-            _context.SaveChanges();
+            if (producto != null)
+            {
+                _context.productos.Remove(producto); 
+                _context.SaveChanges(); 
+            }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("index");
         }
     }
 }
