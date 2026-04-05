@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TiendaVirtualReyes.Data;
 using TiendaVirtualReyes.Models;
+using System.Linq; // Necesario para los filtros .Where
 
 namespace TiendaVirtualReyes.Controllers
 {
@@ -16,6 +17,7 @@ namespace TiendaVirtualReyes.Controllers
         {
             var productos = _context.productos
                 .Include(p => p.Categoria)  // hereda de categoria 
+                .Where(p => p.Categoria.Estado == "Activo") // Filtro: Oculta productos de categorías inactivas
                 .ToList(); // slect * from
 
             return View(productos);
@@ -25,7 +27,8 @@ namespace TiendaVirtualReyes.Controllers
         public IActionResult Create()
         {
             //categorías de la base de datos para el menú desplegable
-            ViewBag.Categorias = _context.categorias.ToList();
+            // Filtro: Solo muestra categorías activas en el selector
+            ViewBag.Categorias = _context.categorias.Where(c => c.Estado == "Activo").ToList();
             return View();
         }
 
@@ -44,12 +47,13 @@ namespace TiendaVirtualReyes.Controllers
             // B. Si el modelo es válido ( nombre, precio, etc)
             if (ModelState.IsValid)
             {
-                _context.productos.Add(producto); 
-                _context.SaveChanges(); 
-                return RedirectToAction("index"); 
+                _context.productos.Add(producto);
+                _context.SaveChanges();
+                return RedirectToAction("index");
             }
 
-            ViewBag.Categorias = _context.categorias.ToList();
+            // Filtro: Recarga solo las categorías activas si el formulario falla
+            ViewBag.Categorias = _context.categorias.Where(c => c.Estado == "Activo").ToList();
             return View(producto);
         }
 
@@ -60,7 +64,8 @@ namespace TiendaVirtualReyes.Controllers
             var producto = _context.productos.Find(id);
 
             // traer las categorías para que ViewBag
-            ViewBag.Categorias = _context.categorias.ToList();
+            // Filtro: Evita mover productos a categorías inactivas
+            ViewBag.Categorias = _context.categorias.Where(c => c.Estado == "Activo").ToList();
 
             // 3. Envías el producto a la vista
             return View(producto);
@@ -84,8 +89,8 @@ namespace TiendaVirtualReyes.Controllers
 
             if (producto != null)
             {
-                _context.productos.Remove(producto); 
-                _context.SaveChanges(); 
+                _context.productos.Remove(producto);
+                _context.SaveChanges();
             }
 
             return RedirectToAction("index");

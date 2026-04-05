@@ -1,31 +1,44 @@
-﻿@model List<TiendaVirtualReyes.Models.Categoria>
+﻿@model IEnumerable<TiendaVirtualReyes.Models.Categoria>
 
-<h2>Lista de categoria</h2>
+@{
+    ViewData["Title"] = "Listado de Categorías";
+}
 
-<table class="table">
+<h1>Listado de Categorías</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear Nueva Categoría</a>
+</p>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Nombre</th>
-            <th>Descripcion</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Id</td>
                 <td>@item.Nombre</td>
                 <td>@item.Descripcion</td>
                 <td>
-                    @if (!string.IsNullOrEmpty(item.Nombre))
+                    @if (item.Estado == "Activo")
                     {
-                        <span class="text-success">activo</span>
+                        <span class="badge bg-success">Activo</span>
                     }
                     else
                     {
-                        <span class="text-danger">sin nombre</span>
+                        <span class="badge bg-danger">Inactivo</span>
                     }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
+                       onclick="return confirm('¿Seguro que quieres eliminar esta categoría?')">Eliminar</a>
                 </td>
             </tr>
         }
