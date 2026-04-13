@@ -17,6 +17,10 @@ namespace TiendaVirtualReyes.Controllers
         // Listado de categorías reales
         public IActionResult index()
         {
+            if (HttpContext.Session.GetString("Usuarios") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             var listaCategorias = _context.categorias.ToList();
             return View(listaCategorias);
         }

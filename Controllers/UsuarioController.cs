@@ -16,6 +16,10 @@ namespace TiendaVirtualReyes.Controllers
         // Listado de usuarios
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Usuarios") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             return View(_context.usuarios.ToList());
         }
 

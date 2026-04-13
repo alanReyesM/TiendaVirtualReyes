@@ -15,6 +15,10 @@ namespace TiendaVirtualReyes.Controllers
         }
         public IActionResult index()
         {
+            if (HttpContext.Session.GetString("Usuarios")==null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             var productos = _context.productos
                 .Include(p => p.Categoria)  // hereda de categoria 
                 .Where(p => p.Categoria.Estado == "Activo") // Filtro: Oculta productos de categorías inactivas
