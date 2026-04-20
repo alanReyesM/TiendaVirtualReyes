@@ -11,8 +11,8 @@ using TiendaVirtualReyes.Data;
 namespace TiendaVirtualReyes.Migrations
 {
     [DbContext(typeof(TiendaContext))]
-    [Migration("20260405045736_ActualizarUsuarios")]
-    partial class ActualizarUsuarios
+    [Migration("20260420222131_alan")]
+    partial class alan
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

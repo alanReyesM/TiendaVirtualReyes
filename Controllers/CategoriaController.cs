@@ -17,7 +17,7 @@ namespace TiendaVirtualReyes.Controllers
         // Listado de categorías reales
         public IActionResult index()
         {
-            if (HttpContext.Session.GetString("Usuarios") == null)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("index", "Login");
             }
@@ -28,6 +28,10 @@ namespace TiendaVirtualReyes.Controllers
         // Formulario Crear (GET)
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             return View();
         }
 
@@ -35,6 +39,10 @@ namespace TiendaVirtualReyes.Controllers
         [HttpPost]
         public IActionResult Create(Categoria categoria)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             if (ModelState.IsValid) // Revisa las reglas [Required] del modelo
             {
                 _context.categorias.Add(categoria);
@@ -47,6 +55,10 @@ namespace TiendaVirtualReyes.Controllers
         // Formulario Editar (GET)
         public IActionResult Edit(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             var categoria = _context.categorias.Find(id);
             if (categoria == null) return NotFound();
             return View(categoria);
@@ -68,6 +80,11 @@ namespace TiendaVirtualReyes.Controllers
         // Eliminar Categoría
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
+
             var categoria = _context.categorias.Find(id);
             if (categoria != null)
             {

@@ -15,7 +15,7 @@ namespace TiendaVirtualReyes.Controllers
         }
         public IActionResult index()
         {
-            if (HttpContext.Session.GetString("Usuarios")==null)
+            if (HttpContext.Session.GetString("Usuario")==null)
             {
                 return RedirectToAction("index", "Login");
             }
@@ -30,6 +30,10 @@ namespace TiendaVirtualReyes.Controllers
         // 1. FORMULARIO CREAR (GET)
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             //categorías de la base de datos para el menú desplegable
             // Filtro: Solo muestra categorías activas en el selector
             ViewBag.Categorias = _context.categorias.Where(c => c.Estado == "Activo").ToList();
@@ -64,6 +68,10 @@ namespace TiendaVirtualReyes.Controllers
         //formulario editar
         public IActionResult Edit(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             // 1. Buscas el producto que vas a editar
             var producto = _context.productos.Find(id);
 
@@ -79,6 +87,10 @@ namespace TiendaVirtualReyes.Controllers
         [HttpPost]
         public IActionResult Edit(Producto producto)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             _context.productos.Update(producto);
             _context.SaveChanges();
 
@@ -88,6 +100,10 @@ namespace TiendaVirtualReyes.Controllers
         // Eliminar producto 
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             // 1. Buscamos el producto por su ID
             var producto = _context.productos.Find(id);
 

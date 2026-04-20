@@ -3,7 +3,7 @@ using TiendaVirtualReyes.Data;
 using TiendaVirtualReyes.Models;
 using System.Linq;
 
-namespace TiendaVirtualReyes.Controllers
+namespace TiendaVirtualJojoa.Controllers
 {
     public class LoginController : Controller
     {
@@ -26,7 +26,7 @@ namespace TiendaVirtualReyes.Controllers
                 HttpContext.Session.SetString("Usuario", usuario.Nombre);
                 HttpContext.Session.SetString("Rol", usuario.Rol);
 
-                return RedirectToAction("Index", "Producto");
+                return RedirectToAction("Index", "Categoria");
             }
             ViewBag.Error = "Credenciales incorrectas";
             return View();

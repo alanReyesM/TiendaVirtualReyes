@@ -16,7 +16,7 @@ namespace TiendaVirtualReyes.Controllers
         // Listado de usuarios
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Usuarios") == null)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("index", "Login");
             }
@@ -26,6 +26,10 @@ namespace TiendaVirtualReyes.Controllers
         // Formulario Crear (GET)
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             return View();
         }
 
@@ -33,6 +37,10 @@ namespace TiendaVirtualReyes.Controllers
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             if (ModelState.IsValid)
             {
                 _context.usuarios.Add(usuario);
@@ -45,6 +53,10 @@ namespace TiendaVirtualReyes.Controllers
         // Formulario Editar (GET)
         public IActionResult Edit(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             var usuario = _context.usuarios.Find(id);
             if (usuario == null) return NotFound();
             return View(usuario);
@@ -54,6 +66,10 @@ namespace TiendaVirtualReyes.Controllers
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             if (ModelState.IsValid)
             {
                 _context.usuarios.Update(usuario);
@@ -66,6 +82,10 @@ namespace TiendaVirtualReyes.Controllers
         // Eliminar Usuario
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             var usuario = _context.usuarios.Find(id);
             if (usuario != null)
             {
