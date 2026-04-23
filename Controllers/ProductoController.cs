@@ -91,6 +91,12 @@ namespace TiendaVirtualReyes.Controllers
             {
                 return RedirectToAction("index", "Login");
             }
+            var rol = HttpContext.Session.GetString("Rol");
+            //SOLO ADMIN PUEDE ELIMINAR
+            if (rol != "admin")
+            {
+                return RedirectToAction("Index");
+            }
             _context.productos.Update(producto);
             _context.SaveChanges();
 
@@ -103,6 +109,12 @@ namespace TiendaVirtualReyes.Controllers
             if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("index", "Login");
+            }
+            var rol = HttpContext.Session.GetString("Rol");
+            //SOLO ADMIN PUEDE ELIMINAR
+            if (rol != "admin")
+            {
+                return RedirectToAction("Index");
             }
             // 1. Buscamos el producto por su ID
             var producto = _context.productos.Find(id);

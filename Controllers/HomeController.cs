@@ -15,6 +15,10 @@ namespace TiendaVirtualReyes.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("index", "Login");
+            }
             return View();
         }
 
