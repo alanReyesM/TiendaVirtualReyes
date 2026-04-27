@@ -2,7 +2,7 @@
 using TiendaVirtualReyes.Data;
 using TiendaVirtualReyes.Models;
 using System.Linq;
-
+using TiendaVirtualReyes.Helpers;
 namespace TiendaVirtualJojoa.Controllers
 {
     public class LoginController : Controller
@@ -19,8 +19,9 @@ namespace TiendaVirtualJojoa.Controllers
         [HttpPost]
         public IActionResult Index(string correo, string clave)
         {
+            string claveHash = HashHelpers.ObtenerHash(clave);
             var usuario = _context.usuarios
-                .FirstOrDefault(u => u.Correo == correo && u.Rol == clave);
+                .FirstOrDefault(u => u.Correo == correo && u.clave == claveHash);
             if (usuario != null)
             {
                 HttpContext.Session.SetString("Usuario", usuario.Nombre);

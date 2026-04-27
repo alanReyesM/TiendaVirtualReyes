@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TiendaVirtualReyes.Data;
 using TiendaVirtualReyes.Models;
+using TiendaVirtualReyes.Helpers;
 
 namespace TiendaVirtualReyes.Controllers
 {
@@ -43,6 +44,8 @@ namespace TiendaVirtualReyes.Controllers
             }
             if (ModelState.IsValid)
             {
+                //convertir contra a hash
+                usuario.clave = HashHelpers.ObtenerHash(usuario.clave);
                 _context.usuarios.Add(usuario);
                 _context.SaveChanges();
                 return RedirectToAction("index");
