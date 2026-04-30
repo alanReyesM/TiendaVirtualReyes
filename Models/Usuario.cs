@@ -19,6 +19,9 @@ namespace TiendaVirtualReyes.Models
         [Required(ErrorMessage = "El celular es obligatorio")]
         [RegularExpression(@"^3\d{9}$", ErrorMessage = "El celular debe empezar por 3 y tener 10 dígitos")]
         public string celular { get; set; }
+
+        [Required(ErrorMessage = "La clave es obligatoria")]
+        [MinLength(4, ErrorMessage = "minimo 4 caracteres")]
         public string clave { get; set; }
     }
 }
