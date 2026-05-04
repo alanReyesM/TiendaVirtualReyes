@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TiendaVirtualReyes.Data;
+using TiendaVirtualReyes.Migrations; // Necesario para los filtros .Where
 using TiendaVirtualReyes.Models;
-using System.Linq; // Necesario para los filtros .Where
 
 namespace TiendaVirtualReyes.Controllers
 {
@@ -42,7 +43,7 @@ namespace TiendaVirtualReyes.Controllers
 
         // Recibe los datos y los guarda
         [HttpPost]
-        public IActionResult Create(Producto producto)
+        public IActionResult Create(Producto producto, IFormFile imagen)
         {
             // A. Validar exista en la tabla categorias
             var existeCategoria = _context.categorias.Any(c => c.Id == producto.CategoriaId);
@@ -52,9 +53,21 @@ namespace TiendaVirtualReyes.Controllers
                 ModelState.AddModelError("CategoriaId", "seleccionar categoria valida");
             }
 
+            
             // B. Si el modelo es válido ( nombre, precio, etc)
             if (ModelState.IsValid)
             {
+                if (imagen != null)
+                {
+               
+                    var ruta = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot/images", imagen.FileName);
+                    using (var stream = new FileStream(ruta, FileMode.Create))
+                    {
+                        imagen.CopyTo(stream);
+                    }
+                    producto.ImagenUrl = "/images/" + imagen.FileName;
+                }   
                 _context.productos.Add(producto);
                 _context.SaveChanges();
                 return RedirectToAction("index");
