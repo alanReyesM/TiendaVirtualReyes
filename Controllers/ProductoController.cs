@@ -79,6 +79,42 @@ namespace TiendaVirtualReyes.Controllers
         }
 
         //formulario editar
+        /* public IActionResult Edit(int id)
+         {
+             if (HttpContext.Session.GetString("Usuario") == null)
+             {
+                 return RedirectToAction("index", "Login");
+             }
+             // 1. Buscas el producto que vas a editar
+             var producto = _context.productos.Find(id);
+
+             // traer las categorías para que ViewBag
+             // Filtro: Evita mover productos a categorías inactivas
+             ViewBag.Categorias = _context.categorias.Where(c => c.Estado == "Activo").ToList();
+
+             // 3. Envías el producto a la vista
+             return View(producto);
+         }
+
+         //actualizar producto 
+         [HttpPost]
+         public IActionResult Edit(Producto producto)
+         {
+             if (HttpContext.Session.GetString("Usuario") == null)
+             {
+                 return RedirectToAction("index", "Login");
+             }
+             var rol = HttpContext.Session.GetString("Rol");
+             //SOLO ADMIN PUEDE ELIMINAR
+             if (rol != "admin")
+             {
+                 return RedirectToAction("Index");
+             }
+             _context.productos.Update(producto);
+             _context.SaveChanges();
+
+             return RedirectToAction("Index");
+         }*/
         public IActionResult Edit(int id)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
@@ -98,7 +134,7 @@ namespace TiendaVirtualReyes.Controllers
 
         //actualizar producto 
         [HttpPost]
-        public IActionResult Edit(Producto producto)
+        public IActionResult Edit(Producto producto, IFormFile imagen)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
             {
@@ -110,9 +146,25 @@ namespace TiendaVirtualReyes.Controllers
             {
                 return RedirectToAction("Index");
             }
-            _context.productos.Update(producto);
-            _context.SaveChanges();
 
+            var productoBD = _context.productos.Find(producto.Id);
+            productoBD.Nombre = producto.Nombre;
+            productoBD.Precio = producto.Precio;
+            productoBD.Stock = producto.Stock;
+            productoBD.CategoriaId = producto.CategoriaId;
+
+            if (imagen != null)
+            {
+                var ruta = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot/images", imagen.FileName);
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    imagen.CopyTo(stream);
+                }
+                productoBD.ImagenUrl = "/images/" + imagen.FileName;
+            }
+
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
