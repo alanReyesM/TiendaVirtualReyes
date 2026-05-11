@@ -6,7 +6,7 @@
 {
     <a class="btn btn-success mb-3" href="/Producto/Create">Nuevo Producto</a>
 }
-
+<a class="btn btn-primary mb-3" href="/Producto/Carrito"> Ver Carrito</a> 
 <div class="row">
     @foreach (var item in Model)
     {
@@ -23,7 +23,23 @@
                         <strong>Categoría:</strong> @item.Categoria?.Nombre
                     </p>
                 </div>
+                <hr>
 
+                <form asp-action="AgregarCarrito" method="post">
+
+                    <input type="hidden" name="id" value="@item.Id" />
+
+                    <input type="number"
+                           name="cantidad"
+                           value="1"
+                           min="1"
+                           class="form-control mb-2" />
+
+                    <button class="btn btn-primary w-100">
+                        Agregar al carrito
+                    </button>
+
+                </form>
                 @if (Context.Session.GetString("Rol") == "admin")
                 {
                     <div class="card-footer d-flex gap-2">
