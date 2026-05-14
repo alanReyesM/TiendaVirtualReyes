@@ -172,6 +172,22 @@ namespace TiendaVirtualReyes.Controllers
         //carrito de compra para agregar
         public IActionResult AgregarCarrito(int id, int cantidad)
         {
+            // Obtener producto de la base de datos
+            var producto = _context.productos.Find(id);
+
+            // VALIDAR STOCK
+            if (producto == null || producto.Stock == 0)
+            {
+                TempData["Error"] = "Producto sin existencias";
+                return RedirectToAction("Index");
+            }
+            // VALIDAR CANTIDAD
+            if (cantidad > producto.Stock)
+            {
+                TempData["Error"] = "No hay disponibles tantas unidades";
+                return RedirectToAction("Index");
+            }
+
             var carritoJson = HttpContext.Session.GetString("Carrito");
             List<CarritoItem> carrito;
 
@@ -181,13 +197,20 @@ namespace TiendaVirtualReyes.Controllers
             }
             else
             {
-                carrito = JsonSerializer.Deserialize<List<CarritoItem>>(carritoJson);
+                carrito = System.Text.Json.JsonSerializer
+                    .Deserialize<List<CarritoItem>>(carritoJson);
             }
 
             var item = carrito.FirstOrDefault(p => p.ProductoId == id);
 
             if (item != null)
             {
+                // Valida suma
+                if ((item.Cantidad + cantidad) > producto.Stock)
+                {
+                    TempData["Error"] = "No hay suficientes unidades disponibles";
+                    return RedirectToAction("Index");
+                }
                 item.Cantidad += cantidad;
             }
             else
@@ -198,8 +221,12 @@ namespace TiendaVirtualReyes.Controllers
                     Cantidad = cantidad
                 });
             }
-
-            HttpContext.Session.SetString("Carrito", JsonSerializer.Serialize(carrito));
+            // Guardar carrito actualizado en sesión
+            HttpContext.Session.SetString(
+                "Carrito",
+                System.Text.Json.JsonSerializer.Serialize(carrito)
+            );
+            TempData["Mensaje"] = "Producto agregado al carrito";
 
             return RedirectToAction("Index");
         }

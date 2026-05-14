@@ -6,6 +6,18 @@
 {
     <a class="btn btn-success mb-3" href="/Producto/Create">Nuevo Producto</a>
 }
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <a class="btn btn-primary mb-3" href="/Producto/Carrito"> Ver Carrito</a> 
 <div class="row">
     @foreach (var item in Model)
@@ -24,22 +36,36 @@
                     </p>
                 </div>
                 <hr>
+                @if(item.Stock > 0)
+                {
+                    
+                
+                    <form asp-action="AgregarCarrito" method="post">
 
-                <form asp-action="AgregarCarrito" method="post">
+                        <input type="hidden" name="id" value="@item.Id" />
 
-                    <input type="hidden" name="id" value="@item.Id" />
+                        <input type="number"
+                               name="cantidad"
+                               value="1"
+                               min="1"
+                               max="@item.Stock"
+                               class="form-control mb-2" />
 
-                    <input type="number"
-                           name="cantidad"
-                           value="1"
-                           min="1"
-                           class="form-control mb-2" />
+                        <button class="btn btn-primary w-100">
+                            Agregar al carrito
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center">
+                        Producto agotado
+                    </div>
 
-                    <button class="btn btn-primary w-100">
-                        Agregar al carrito
+                    <button class="btn btn-secondary w-100" disabled>
+                        Sin stock
                     </button>
-
-                </form>
+                }
                 @if (Context.Session.GetString("Rol") == "admin")
                 {
                     <div class="card-footer d-flex gap-2">
